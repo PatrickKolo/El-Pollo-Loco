@@ -12,11 +12,25 @@ class World {
         this.keyboard = keyboard;
         this.draw();
         this.setWorld();
+        this.checkCollision();
     }
 
     setWorld() {
         this.character.world = this;
     } // Damit man in der Klasse Character auf die World Inhalte zugreifen kann
+
+
+    checkCollision() {
+        setInterval(() => {
+            this.level.enemies.forEach((enemy) => {
+                if (this.character.isColliding(enemy)) {
+                    
+                    this.character.hit();
+                    console.log('Collision with Character, energy', this.character.energy)
+                }
+            });
+        }, 1000);
+    }
 
 
     draw() {
@@ -26,6 +40,9 @@ class World {
 
         this.addObjectsToMap(this.level.backgroundObjects);
         this.addObjectsToMap(this.level.clouds);
+
+        
+
         this.addToMap(this.character)
         this.addObjectsToMap(this.level.enemies);
         // Reihenfolge der Funktionen ist wichtig
@@ -51,7 +68,12 @@ class World {
             this.flipImage(mo)
         }
 
-        this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
+        mo.draw(this.ctx);
+        mo.drawFrame(this.ctx);
+
+
+
+
         if (mo.otherDirection) {
             this.flipImageBack(mo)
 
