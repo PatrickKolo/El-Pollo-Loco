@@ -5,6 +5,7 @@ class World {
     ctx;
     keyboard;
     camera_x = 0;
+    statusBar = new StatusBar()
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -24,7 +25,7 @@ class World {
         setInterval(() => {
             this.level.enemies.forEach((enemy) => {
                 if (this.character.isColliding(enemy)) {
-                    
+
                     this.character.hit();
                     console.log('Collision with Character, energy', this.character.energy)
                 }
@@ -39,11 +40,11 @@ class World {
         this.ctx.translate(this.camera_x, 0); // verschiebt den Bildauschnitt um die variable camera_x auf der x-achse
 
         this.addObjectsToMap(this.level.backgroundObjects);
+
+        this.addToMap(this.statusBar);
+        this.addToMap(this.character)
         this.addObjectsToMap(this.level.clouds);
 
-        
-
-        this.addToMap(this.character)
         this.addObjectsToMap(this.level.enemies);
         // Reihenfolge der Funktionen ist wichtig
 
