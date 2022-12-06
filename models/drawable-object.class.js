@@ -23,10 +23,10 @@ class DrawableObject {
 
     drawFrame(ctx) {
 
-        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss) {
+        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss ) {
             ctx.beginPath();
-            ctx.lineWidth = '5';
-            ctx.strokeStyle = 'blue';
+            ctx.lineWidth = '0';
+            ctx.strokeStyle = 'black';
             ctx.rect(this.x, this.y, this.width, this.height);
             ctx.stroke();
         }

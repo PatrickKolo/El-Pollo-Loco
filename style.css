@@ -1,9 +1,130 @@
+@font-face {
+    font-family: 'Zabras';
+    src: url('fonts/Zabars.ttf') format('truetype');
+}  
+
 body{
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-image: url('img/5_background/main-bg.jpg');
+    font-family: 'Zabras', Arial, Helvetica, sans-serif;
 }
+
+.start-img{
+    width: 1000px;
+    height: 600px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    
+}
+
+body button{
+    width: 1000px;
+    height: 100px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border: none;
+    background-color: rgb(153, 68, 9);
+    font-size: 72px;
+    font-family: 'Zabras';
+    cursor: pointer;
+    color: rgb(255,223,0);
+    -webkit-text-stroke: 3px rgb(135 46 14);
+}
+
+body button:hover {
+background-color: rgb(183,97,39);
+}
+
+.play-info{
+    position: relative;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    color: rgb(0, 0, 0);
+    gap: 40px;
+}
+
+.move-info{
+    position: relative;
+}
+
+.left p{
+    position: absolute;
+    bottom: -5px;
+    left: 65px;
+
+
+}
+
+.right p{
+    position: absolute;
+    bottom: -5px;
+    left: 54px;
+
+
+}
+
+.jump p{
+    position: absolute;
+    bottom: -5px;
+    left: 85px;
+}
+
+.throw p{
+    position: absolute;
+    bottom: -5px;
+    left: 50px;
+}
+
+.arrow{
+    width: 20px;
+}
+
+.cactus{
+    width: 220px;
+    height: 160px;
+}
+
+
 
 canvas {
     background-color: black;
+    border-radius: 10px;
+}
+
+h1{
+    font-size: 80px;
+    letter-spacing: 3px;
+    text-shadow: 4px 4px 8px rgba( 0,0,0,0.5);
+}
+
+.game-over-img{
+    width: 100vw;
+    height: 100vh;
+}
+
+.restart-btn-won{
+    font-size: 90px;
+    position: absolute;
+    top: 650px;
+    color: RGB(255 193 0);
+    border: 5px;
+    letter-spacing: 4px;
+    -webkit-text-stroke: 3px rgb(135 46 14);
+
+}
+
+.restart-btn-lost{
+    font-size: 100px;
+    position: absolute;
+    top: 730px;
+    color: rgb(255,223,0);
+    border: 5px;
+    letter-spacing: 4px;
+    -webkit-text-stroke: 3px rgb(135 46 14);
+
 }

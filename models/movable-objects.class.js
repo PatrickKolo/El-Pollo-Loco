@@ -1,8 +1,7 @@
 class MovableObject extends DrawableObject {
 
+    groundPosition = 0;
 
-
-  
     speed = 0.15;
     otherDirection = false;
     speedY = 0;
@@ -20,10 +19,10 @@ class MovableObject extends DrawableObject {
     }
 
     isAboveGround() {
-        return this.y < 180;
+            return this.y < this.groundPosition;
     }
 
-  
+
 
     // character.iscolliding (chicken)
     isColliding(mo) {
@@ -31,6 +30,13 @@ class MovableObject extends DrawableObject {
             this.y + this.height > mo.y &&
             this.x < mo.x &&
             this.y < mo.y + mo.height;
+    }
+
+    isCollidingCoin(coin) {
+        return this.x + this.width > coin.x &&
+            this.y + this.height > coin.y &&
+            this.x < coin.x &&
+            this.y < coin.y + coin.height;
     }
 
 
@@ -56,7 +62,7 @@ class MovableObject extends DrawableObject {
 
 
 
-  
+
     playAnimation(images) {
         let i = this.currentImage % images.length; // % = Modulu = Mathematische Rest //  let i = 7 % 6; => 1, Rest 1 
         // i = 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2......
