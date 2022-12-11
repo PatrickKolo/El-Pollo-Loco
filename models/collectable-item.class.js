@@ -1,5 +1,0 @@
-class CollactableItem extends DrawableObject {
-
-
-
-}

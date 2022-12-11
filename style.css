@@ -11,6 +11,15 @@ body{
     font-family: 'Zabras', Arial, Helvetica, sans-serif;
 }
 
+.mainBody{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 100px; 
+}
+
+
 .start-img{
     width: 1000px;
     height: 600px;
@@ -43,9 +52,9 @@ background-color: rgb(183,97,39);
     width: 100%;
     justify-content: center;
     align-items: center;
-    font-size: 30px;
+    font-size: 23px;
     color: rgb(0, 0, 0);
-    gap: 40px;
+    gap: 10px;
 }
 
 .move-info{
@@ -54,39 +63,57 @@ background-color: rgb(183,97,39);
 
 .left p{
     position: absolute;
-    bottom: -5px;
-    left: 65px;
+    bottom: -3px;
+    left: 46px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 
 
 }
 
 .right p{
     position: absolute;
-    bottom: -5px;
-    left: 54px;
+    bottom: -3px;
+    left: 43px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 
 
 }
 
 .jump p{
     position: absolute;
-    bottom: -5px;
-    left: 85px;
+    bottom: -3px;
+    left: 60px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .throw p{
     position: absolute;
-    bottom: -5px;
-    left: 50px;
+    bottom: -3px;
+    left: 40px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
+
+.fullscreen{
+    cursor: pointer;
+}
+
+
 
 .arrow{
     width: 20px;
 }
 
 .cactus{
-    width: 220px;
-    height: 160px;
+    width: 175px;
+    height: 125px;
 }
 
 
@@ -100,6 +127,8 @@ h1{
     font-size: 80px;
     letter-spacing: 3px;
     text-shadow: 4px 4px 8px rgba( 0,0,0,0.5);
+    
+
 }
 
 .game-over-img{
@@ -127,4 +156,19 @@ h1{
     letter-spacing: 4px;
     -webkit-text-stroke: 3px rgb(135 46 14);
 
+}
+.fullscreen{
+    position: absolute;
+    bottom: 70px;
+    right: 70px;
+}
+
+
+.mute{
+    position: absolute;
+    bottom: 150px;
+    right: 70px;
+    width: 60;
+    height: 60;
+    cursor: pointer;
 }

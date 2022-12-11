@@ -18,19 +18,19 @@ class MovableObject extends DrawableObject {
         }, 1000 / 25);
     }
 
+    
     isAboveGround() {
             return this.y < this.groundPosition;
     }
 
-
-
     // character.iscolliding (chicken)
     isColliding(mo) {
-        return this.x + this.width > mo.x &&
-            this.y + this.height > mo.y &&
-            this.x < mo.x &&
-            this.y < mo.y + mo.height;
+        return   this.x + this.width > mo.x &&
+        this.y + this.height > mo.y &&
+        this.x < mo.x && 
+        this.y < mo.y + mo.height
     }
+
 
     isCollidingCoin(coin) {
         return this.x + this.width > coin.x &&
@@ -49,6 +49,7 @@ class MovableObject extends DrawableObject {
         }
     }
 
+
     isHurt() {
         let timepassed = new Date().getTime() - this.lastHit; // Difference in ms
         timepassed = timepassed / 1000;
@@ -56,11 +57,10 @@ class MovableObject extends DrawableObject {
 
     }
 
+
     isDead() {
         return this.energy == 0;
     }
-
-
 
 
     playAnimation(images) {
@@ -72,18 +72,15 @@ class MovableObject extends DrawableObject {
     }
 
 
-
     moveRight() {
         this.x += this.speed;
-
-
     }
+
 
     moveLeft() {
-
         this.x -= this.speed;
-
     }
+
 
     jump() {
         this.speedY = 30;

@@ -1,5 +1,4 @@
 class Bottle extends MovableObject {
-
     height = 80
     width = 70
     y = 350
@@ -18,7 +17,5 @@ class Bottle extends MovableObject {
         super().loadImage(this.IMAGES[0])
         this.loadImages(this.IMAGES)
         this.x = 200 + (Math.random()+ 0.05) * 2000;
-    
     } 
-
 }

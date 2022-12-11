@@ -37,6 +37,7 @@ class Endboss extends MovableObject {
     ]
 
     endboss_dead_sound = new Audio('audio/sizzle.mp3')
+    endboss_walking = new Audio('audio/ChickenBoss.mp3')
 
     constructor() {
         super().loadImage(this.IMAGES_NORMAL[0])
@@ -57,23 +58,25 @@ class Endboss extends MovableObject {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD)
                 clearInterval(this.moveX)
-                this.endboss_dead_sound.play()
+                playOrStopSound(this.endboss_dead_sound);
+                this.endboss_walking.pause()
 
-                console.log("endboss is dead")
+             
             }
 
             else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT)
-                console.log("endboss animation hurt")
+            
             }
 
             else if (this.energy <= 20 && this.energy >= 0) {
                 this.playAnimation(this.IMAGES_WALKING)
+                playOrStopSound(this.endboss_walking);
             }
 
             else if (this.energy >= 25) {
                 this.playAnimation(this.IMAGES_NORMAL)
-                console.log("endboss animation normal")
+              
             }
 
         }, 200)

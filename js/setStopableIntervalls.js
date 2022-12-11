@@ -7,6 +7,7 @@ function setStoppableInterval(fn, time) {
    intervalIDS.push(id)
 }
 
+
 function stopInterval() {
     intervalIDS.forEach(clearInterval)
 }
