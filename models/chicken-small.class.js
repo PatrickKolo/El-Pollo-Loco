@@ -1,7 +1,7 @@
 class SmallChicken extends MovableObject{
     height = 50;
     width = 55;
-    y = 370;
+    y = 375;
     dead = false
     move
     animationWalking
@@ -19,7 +19,7 @@ class SmallChicken extends MovableObject{
         super().loadImage(this.IMAGES_WALKING[0])
         this.loadImages(this.IMAGES_WALKING)
         this.loadImages(this.CHICKEN_DEAD)
-        this.x = 200 + Math.random() * 1500 // Zahl zwischen 200 und 1500
+        this.x = 550 + Math.random() * 1500 // Zahl zwischen 200 und 1500
         this.speed = 0.15 + Math.random() * 0.25
         this.animate()
     }

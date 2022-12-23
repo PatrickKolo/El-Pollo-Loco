@@ -1,7 +1,7 @@
 class Chicken extends MovableObject {
     height = 60;
     width = 70;
-    y = 365;
+    y = 370;
 
     dead = false
     move
@@ -21,13 +21,12 @@ class Chicken extends MovableObject {
         super().loadImage(this.IMAGES_WALKING[0])
         this.loadImages(this.IMAGES_WALKING)
         this.loadImages(this.CHICKEN_DEAD)
-        this.x = 200 + Math.random() * 1500 // Zahl zwischen 200 und 1500
+        this.x = 600 + Math.random() * 1500 // Zahl zwischen 200 und 1500
         this.speed = 0.15 + Math.random() * 0.25
         this.animate()
     }
 
     animate() {
-
         this.move =  setInterval( () => {
               this.x -= this.speed
           }, 1000 / 60)

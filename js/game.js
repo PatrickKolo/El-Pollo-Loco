@@ -4,49 +4,48 @@ level = level1;
 let keyboard = new Keyboard();
 let playSound = true;
 
-game_sound = new Audio('audio/game_sound2.mp3');
+gameSound = new Audio('audio/game_sound2.mp3');
 
+/**
+ * renders the canvas the loading screen and the game Infos
+ */
 function startGame() {
-    initLevel()
+    initLevel();
+    showLoadScreen();
     document.getElementById('body').innerHTML = ''
-    document.getElementById('body').innerHTML += /*html*/`
-
-    <h1 class="headline">El Pollo Loco</h1>
-
-    <div id="fullscreen">
-        <canvas id="canvas" width="720" height="480"></canvas>
-    </div>
-    
-      <div class="play-info">
-        <div class="move-info left" onclick="listenForTouches()">
-        <img id="touch-move-left" class="cactus" src="img/play_info/sombrero1.png" alt="">
-        <p>move left: <img class="arrow" src="img/play_info/arrow_left.ico" alt=""></p>
-        </div>
-
-        <div class="move-info right" onclick="listenForTouches()">
-        <img id="touch-move-right" class="cactus" src="img/play_info/sombrero1.png" alt="">
-        <p>move right: <img class="arrow" src="img/play_info/arrow_right2.ico" alt=""></p>
-        </div>
-
-        <div class="move-info jump" onclick="listenForTouches()">
-        <img id="touch-jump" class="cactus" src="img/play_info/sombrero1.png" alt="">
-        <p>jump: <img class="arrow" src="img/play_info/arrow_up.ico" alt=""></p>
-        </div>
-
-        <div  class="move-info throw" onclick="listenForTouches()">
-        <img  id="touch-throw" class="cactus" src="img/play_info/sombrero1.png" alt="">
-        <p>throw bottle: D</p>
-        </div>
-    </div>  
-    <img onclick="openFullscreen()" class="fullscreen" src="img/play_info/fullscreen.ico" alt="">
-    <img onclick="muteSounds()" id="sound" class="mute" src="img/play_info/volume.ico" alt="">
-    `
+    document.getElementById('body').innerHTML += generateGameInfo();
     canvas = document.getElementById('canvas')
     world = new World(canvas, keyboard)
 }
 
+/**
+ * shows the loading screen for 2 seconds
+ */
+function showLoadScreen() {
+    setTimeout(() => {
+        document.getElementById("load-screen").classList.add("d-none");
+    }, 2000);
+}
+
+/**
+ * checks the orientation of the display
+ */
+function checkOrientation() {
+    if (window.matchMedia("(orientation: landscape)").matches) {
+        if (window.innerHeight < 480) {
+            newHeight = window.innerHeight;
+            document.getElementById('canvas').style.height = `${newHeight}px`;
+        }
+    }
+    else {
+        document.getElementById('canvas').style.height = `100%`;
+    }
+}
 
 
+/**
+ * enables fullscreen mode
+ */
 function openFullscreen() {
     let elem = document.getElementById("canvas");
     if (elem.requestFullscreen) {
@@ -59,36 +58,42 @@ function openFullscreen() {
 }
 
 
+/**
+ * function for muting the sounds in the game
+ */
 function muteSounds() {
-    if (document.getElementById('sound').src = "img/play_info/volume.ico") {
-        soundOff();
-    } else {
-        soundOn();
-    }
+     playSound ? soundOff() : soundOn();
+
 }
 
+/**
+ * turns sound off and shows the mute icon
+ */
 function soundOff() {
     document.getElementById('sound').src = "img/play_info/mute.ico";
     playSound = false;
-
 }
 
+/**
+ * turns sound on and shows the sound on icon
+ */
 function soundOn() {
     document.getElementById('sound').src = "img/play_info/volume.ico";
     playSound = true;
-
 }
 
+/**
+ * function for muting and unmuting the sounds in the game
+ * @param {*} sound - the game sound which should be muted or unmuted
+ */
 function playOrStopSound(sound) {
-    if (playSound) {
-        sound.play();
-    } else {
-        sound.pause();
-    }
+    playSound ? sound.play() : sound.pause()
 }
 
 
-
+/**
+ * reads the keyboard input for game control
+ */
 window.addEventListener('keydown', (e) => {
     if (e.keyCode == 39) {
         keyboard.RIGHT = true;
@@ -110,6 +115,10 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
+
+/**
+ * reads the keyboard input for game control
+ */
 window.addEventListener('keyup', (e) => {
     if (e.keyCode == 39) {
         keyboard.RIGHT = false;
@@ -131,7 +140,21 @@ window.addEventListener('keyup', (e) => {
     }
 });
 
+
+/**
+ * reads the touches on the control buttons for playing on mobile devices
+ */
 function listenForTouches() {
+    touchMoveLeft();
+    touchMoveRight();
+    touchThrow();
+    touchJump();
+}
+
+/**
+ * reads the touches on the control buttons for playing on mobile devices
+ */
+function touchMoveLeft() {
     document.getElementById('touch-move-left').addEventListener('touchstart', (e) => {
         e.preventDefault()
         keyboard.LEFT = true
@@ -140,22 +163,12 @@ function listenForTouches() {
         e.preventDefault()
         keyboard.LEFT = false
     })
-    document.getElementById('touch-throw').addEventListener('touchstart', (e) => {
-        e.preventDefault()
-        keyboard.D = true
-    })
-    document.getElementById('touch-throw').addEventListener('touchend', (e) => {
-        e.preventDefault()
-        keyboard.D = false
-    })
-    document.getElementById('touch-jump').addEventListener('touchstart', (e) => {
-        e.preventDefault()
-        keyboard.SPACE = true
-    })
-    document.getElementById('touch-jump').addEventListener('touchend', (e) => {
-        e.preventDefault()
-        keyboard.SPACE = false
-    })
+}
+
+/**
+ * reads the touches on the control buttons for playing on mobile devices
+ */
+function touchMoveRight() {
     document.getElementById('touch-move-right').addEventListener('touchstart', (e) => {
         e.preventDefault()
         keyboard.RIGHT = true
@@ -165,3 +178,33 @@ function listenForTouches() {
         keyboard.RIGHT = false
     })
 }
+
+/**
+ * reads the touches on the control buttons for playing on mobile devices
+ */
+function touchThrow() {
+    document.getElementById('touch-throw').addEventListener('touchstart', (e) => {
+        e.preventDefault()
+        keyboard.D = true
+    })
+    document.getElementById('touch-throw').addEventListener('touchend', (e) => {
+        e.preventDefault()
+        keyboard.D = false
+    })
+}
+
+/**
+ * reads the touches on the control buttons for playing on mobile devices
+ */
+function touchJump() {
+    document.getElementById('touch-jump').addEventListener('touchstart', (e) => {
+        e.preventDefault()
+        keyboard.UP = true
+    })
+    document.getElementById('touch-jump').addEventListener('touchend', (e) => {
+        e.preventDefault()
+        keyboard.UP = false
+    })
+}
+
+

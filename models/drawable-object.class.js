@@ -15,20 +15,27 @@ class DrawableObject {
         this.img.src = path;
     }
 
-    
+
     draw(ctx) {
         ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
     }
 
 
     drawFrame(ctx) {
-        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss ) {
+        if (this.canDrawFrame()) {
             ctx.beginPath();
             ctx.lineWidth = '0';
             ctx.strokeStyle = 'black';
             ctx.rect(this.x, this.y, this.width, this.height);
             ctx.stroke();
         }
+    }
+
+    canDrawFrame() {
+        return this instanceof Character ||
+            this instanceof Chicken ||
+            this instanceof Endboss ||
+            this instanceof Coin;
     }
 
 
@@ -47,7 +54,7 @@ class DrawableObject {
         this.img = this.imageCache[path]
     }
 
-    
+
     resolveImageIndex() {
         if (this.percentage == 100) {
             return 5

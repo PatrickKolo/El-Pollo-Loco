@@ -2,11 +2,13 @@ class Character extends MovableObject {
     height = 220;
     width = 120;
     y = 100;
-    groundPosition = 190;
+    groundPosition = 200;
     speed = 6;
+    otherDirection = false;
 
 
     walking_sound = new Audio('audio/walking.mp3');
+    jumping_sound = new Audio('audio/jump.mp3')
     gameOver = new Audio('audio/gameOver.mp3');
 
 
@@ -70,7 +72,15 @@ class Character extends MovableObject {
     ]
     world;
 
-    
+    offset = {
+        top: 150,
+        left: 60,
+        right: 50,
+        bottom: 0
+    }
+
+
+
     constructor() {
         super().loadImage('img/2_character_pepe/2_walk/W-21.png');
         this.loadImages(this.IMAGES_IDLE);
@@ -83,23 +93,49 @@ class Character extends MovableObject {
         this.jump();
     }
 
-
+/**
+ * animates the Character
+ */
     animate() {
         setStoppableInterval(() => {
-            this.walking_sound.pause();
-            this.moveLeftOrRight()
-            if (this.canJump()) {
-                this.jump()
-            }
-            this.world.camera_x = -this.x + 100;
+            this.moveCharacter();
         }, 1000 / 60);
 
         setInterval(() => {
             this.animateCharacter();
-        }, 200);
+        }, 100);
     }
 
+    /**
+     * enables the character to move left to right and jumping as well as the camera follwing the character
+     */
+    moveCharacter() {
+        this.walking_sound.pause();
+        this.moveLeftOrRight()
+        this.moveUp()
+        this.cameraFollowsCharacter();
+    }
 
+/**
+ * enables the camera to follow the character
+ */
+    cameraFollowsCharacter() {
+        this.world.camera_x = -this.x + 100;
+    }
+
+/**
+ * lets the character jump and plays the jumping sound
+ */
+    moveUp() {
+        if (this.canJump()) {
+            this.jump()
+            playOrStopSound(this.jumping_sound);
+        }
+    }
+
+/**
+ * lets the character move left or right
+ */
     moveLeftOrRight() {
         if (this.canMoveRight()) {
             this.walkRight();
@@ -110,25 +146,31 @@ class Character extends MovableObject {
         }
     }
 
-
+/**
+ * lets the character move right, checks the direction and plays the walking sound
+ */
     walkRight() {
-        this.otherDirection = false;
         this.moveRight();
-       if (!this.isAboveGround()) {
+        this.otherDirection = false;
+        if (!this.isAboveGround()) {
             playOrStopSound(this.walking_sound);
         }
     }
 
-
+/**
+ * lets the character move left, checks the direction and plays the walking sound
+ */
     walkLeft() {
-        this.otherDirection = true;
         this.moveLeft();
+        this.otherDirection = true;
         if (!this.isAboveGround()) {
             playOrStopSound(this.walking_sound);
-       }
+        }
     }
 
-
+/**
+ * animates the charcter when dead, hurt, jumping or sleeping
+ */
     animateCharacter() {
         if (this.isDead()) {
             this.playAnimation(this.IMAGES_DEAD);
@@ -140,12 +182,14 @@ class Character extends MovableObject {
             this.playAnimation(this.IMAGES_JUMPING);
         }
         else {
-           this.animateWalkingOrSleeping();
+            this.animateWalkingOrSleeping();
         }
     }
 
-
-    animateWalkingOrSleeping(){
+/**
+ * plays the animation when character is not moving
+ */
+    animateWalkingOrSleeping() {
         if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
             this.playAnimation(this.IMAGES_WALKING);
         }
@@ -154,22 +198,34 @@ class Character extends MovableObject {
         }
     }
 
-
+/**
+ * 
+ * @returns checks the requirements for moving right
+ */
     canMoveRight() {
         return this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x
     }
 
-
+/**
+ * 
+ * @returns checks the requirements for moving left
+ */
     canMoveLeft() {
         return this.world.keyboard.LEFT && this.x > 0
     }
 
-
+/**
+ * 
+ * @returns checks the requirements for moving right
+ */
     canJump() {
         return this.world.keyboard.UP && !this.isAboveGround()
     }
 
-
+/**
+ * 
+ * @returns checks the requirements for moving right
+ */
     noJump() {
         return !this.world.keyboard.SPACE && !this.isAboveGround()
     }

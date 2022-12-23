@@ -18,12 +18,13 @@ class ThrowableObject extends MovableObject {
     ]
 
 
-    constructor(x, y) {
+    constructor(x, y, otherDirection) {
         super().loadImage(this.IMAGES_BOTTLE_ROTATION[0])
         this.loadImages(this.IMAGES_BOTTLE_ROTATION)
         this.loadImages(this.IMAGES_BOTTLE_SPLASH)
         this.x = x
         this.y = y
+        this.otherDirection = otherDirection;
         this.height = 60
         this.width = 50
         this.throw()
@@ -31,33 +32,46 @@ class ThrowableObject extends MovableObject {
 
 
     throw() {
-            this.speedY = 30
-            this.applyGravity()
-            this.rotation()  
+        this.speedY = 25;
+        this.applyGravity()
+        this.rotation()
     }
 
 
+
+
     rotation() {
-        setStoppableInterval( () => {
-                if(this.isAboveGround() && !this.isBroken){
+        setStoppableInterval(() => {
+            if (this.isAboveGround() && !this.isBroken) {
+
+                if (this.otherDirection) {
+
+                    this.playAnimation(this.IMAGES_BOTTLE_ROTATION)
+                    this.x -= 10
+                }
+                else {
+
                     this.playAnimation(this.IMAGES_BOTTLE_ROTATION)
                     this.x += 10
-                }              
+                }
+
+
+            }
         }, 25)
     }
 
 
     splash() {
-         this.breakbottle =setStoppableInterval( () => {
+        this.breakbottle = setStoppableInterval(() => {
             this.playAnimation(this.IMAGES_BOTTLE_SPLASH)
-            this.stopSplash()    
+            this.stopSplash()
         }, 25)
     }
 
 
     stopSplash() {
-        setTimeout( () => {
+        setTimeout(() => {
             clearInterval(this.breakbottle)
         }, 500)
-    } 
+    }
 }

@@ -14,22 +14,26 @@ class World {
     coins = [new Coin(), new Coin(), new Coin(), new Coin(), new Coin(),]
     bottleAmount = 0
     bottles = [new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle()]
-    throwableObjects = [new ThrowableObject(), new ThrowableObject(), new ThrowableObject(), new ThrowableObject(), new ThrowableObject(),]
+    throwableObjects = []
+    playSound = true;
+
+
     chicken = new Chicken()
     SmallChicken = new SmallChicken()
     endBoss = level1.enemies[level1.enemies.length - 1]
     gameEnd = new GameEnd()
-
     isSoundOn = false;
 
-    coin_sound = new Audio('audio/coin.mp3');
-    bottle_sound = new Audio('audio/bottle.mp3');
-    bottle_break_sound = new Audio('audio/bottle_break.mp3');
-    lost_sound = new Audio('audio/lost.mp3');
-    win_sound = new Audio('audio/win.mp3');
-    game_sound = new Audio('audio/game_sound2.mp3');
-    chicken_sound = new Audio('audio/dead_chicken.mp3');
-    endboss_dead_sound = new Audio('audio/sizzle.mp3');
+    coinSound = new Audio('audio/coin.mp3');
+    bottleSound = new Audio('audio/bottle.mp3');
+    bottleBreakSound = new Audio('audio/bottle_break.mp3');
+    lostSound = new Audio('audio/lost.mp3');
+    winSound = new Audio('audio/win.mp3');
+    gameSound = new Audio('audio/game_sound2.mp3');
+    chickenSound = new Audio('audio/dead_chicken.mp3');
+    endbossDeadSound = new Audio('audio/sizzle.mp3');
+    hurtSound = new Audio('audio/hurt.mp3');
+    swooshSound = new Audio('audio/swoosh.mp3');
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -38,71 +42,141 @@ class World {
         this.draw();
         this.setWorld();
         this.run();
-        this.checkThrowObjects()
+        this.checkThrowObjects();
     }
+
 
     setWorld() {
         this.character.world = this;
-
         let endboss = this.level.enemies[this.level.enemies.length - 1];
         endboss.world = this;
-    } // Damit man in der Klasse Character auf die World Inhalte zugreifen kann
+    }
 
 
     run() {
         setStoppableInterval(() => {
-            //Check for Collisions wih Objects
             this.checkCollisions();
             this.checkThrowObjects();
             this.checkGameEnd()
-        }, 70);
+            this.checkGameSound();
+        }, 20);
     }
 
- 
+
+    checkGameSound() {
+        if (this.endBoss.energy == 0 || this.character.energy <= 0 )   {
+            this.gameSound.pause();
+        } else
+        playSound ? this.gameSound.play() : this.gameSound.pause()
+    }
+
 
     checkThrowObjects() {
-        if (this.keyboard.D) {
-            let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100)
-            this.throwableObjects.push(bottle);
-
+        if (this.proofCanThrow()) {
+            if (this.otherDirection) {
+                this.canThrowBottleLeft()
+            } else {
+                this.canThrowBottleRight()
+            }
+            playOrStopSound(this.swooshSound);
+            this.lastThrow = new Date().getTime();
+            this.bottleAmount--
+            this.bottleBar.setPercentage(this.bottleAmount * 20)
         }
     }
 
-    // Collision Character with enemies
 
+    proofCanThrow() {
+        return this.keyboard.D && !this.prooflastThrow(1001) && this.bottleAmount != 0;
+    }
+
+
+    canThrowBottleLeft() {
+        let bottle = new ThrowableObject(this.character.x - 120, this.character.y + 120, this.character.otherDirection);
+        this.throwableObjects.push(bottle)
+    }
+
+
+    canThrowBottleRight() {
+        let bottle = new ThrowableObject(this.character.x + 50, this.character.y + 120, this.character.otherDirection);
+        this.throwableObjects.push(bottle)
+    }
+
+
+    prooflastThrow(ms) {
+        let timepassed = new Date().getTime() - this.lastThrow;
+        return timepassed < ms;
+    }
+
+
+    // Collision Character with enemies
     checkCollisions() {
         this.checkCollision();
         this.checkCollectCoins();
         this.checkCollectBottles();
-        this.checkCollisionBottleWithEndboss();
+        this.checkCollisionBottle();
         this.checkCollisionWithEndboss();
     }
 
 
     checkCollision() {
         this.level.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy) && !this.character.isAboveGround() && !enemy.dead) {
-                this.character.hit();
-                this.statusBar.setPercentage(this.character.energy);
+            if (this.contactWithEnemy(enemy)) {
+                this.characterDamage(enemy.damage);
             }
-            if (this.character.isColliding(enemy) && this.character.isAboveGround() && (enemy instanceof Chicken)) {
-                if (enemy instanceof Chicken) {
-                    enemy.playAnimation(this.chicken.CHICKEN_DEAD)
-                    enemy.stopAnimation()
-                    enemy.dead = true
-                    playOrStopSound(this.chicken_sound);
-                }
+            if (this.contactWithChicken(enemy)) {
+                this.chickenDead(enemy);
             }
-            if (this.character.isColliding(enemy) && this.character.isAboveGround() && (enemy instanceof SmallChicken)) {
-                if (enemy instanceof SmallChicken) {
-                    enemy.playAnimation(this.SmallChicken.CHICKEN_DEAD)
-                    enemy.stopAnimation()
-                    enemy.dead = true
-                    playOrStopSound(this.chicken_sound);
-                }
+            if (this.contactWithSmallChicken(enemy)) {
+                this.smallChickenDead(enemy);
             }
         });
     }
+
+
+    contactWithEnemy(enemy) {
+        return this.character.isColliding(enemy) && !this.character.isAboveGround() && !enemy.dead
+    }
+
+
+    contactWithChicken(enemy) {
+        return this.character.isColliding(enemy) && this.character.isAboveGround() && this.character.speedY >= -30 && this.character.speedY < 0 && (enemy instanceof Chicken)
+    }
+
+
+    contactWithSmallChicken(enemy) {
+        return this.character.isColliding(enemy) && this.character.isAboveGround() && this.character.speedY >= -30 && this.character.speedY < 0 && (enemy instanceof SmallChicken)
+    }
+
+
+    characterDamage(damage) {
+        this.character.hit(damage);
+        this.statusBar.setPercentage(this.character.energy);
+        playOrStopSound(this.hurtSound);
+    }
+
+
+    chickenDead(enemy) {
+        if (enemy instanceof Chicken && !enemy.dead) {
+            this.character.speedY = 15;
+            enemy.playAnimation(this.chicken.CHICKEN_DEAD)
+            enemy.stopAnimation()
+            enemy.dead = true
+            playOrStopSound(this.chickenSound);
+        }
+    }
+
+
+    smallChickenDead(enemy) {
+        if (enemy instanceof SmallChicken && !enemy.dead) {
+            this.character.speedY = 15;
+            enemy.playAnimation(this.SmallChicken.CHICKEN_DEAD)
+            enemy.stopAnimation()
+            enemy.dead = true
+            playOrStopSound(this.chickenSound);
+        }
+    }
+
 
     checkCollectCoins() {
         this.coins.forEach(coin => {
@@ -111,10 +185,11 @@ class World {
                 coin.width = 0;
                 this.coinAmount++;
                 this.coinBar.setPercentage(this.coinAmount * 20);
-                playOrStopSound(this.coin_sound);
+                playOrStopSound(this.coinSound);
             }
         })
     }
+
 
     checkCollectBottles() {
         this.bottles.forEach(bottle => {
@@ -123,75 +198,92 @@ class World {
                 bottle.width = 0
                 this.bottleAmount++
                 this.bottleBar.setPercentage(this.bottleAmount * 20)
-                playOrStopSound(this.bottle_sound);
+                playOrStopSound(this.bottleSound);
             }
         })
     };
 
 
-    checkCollisionBottleWithEndboss() {
+    checkCollisionBottle() {
         this.throwableObjects.forEach(throwableObject => {
-            if (this.endBoss.isColliding(throwableObject) && !throwableObject.isBroken && (throwableObject.heigth != 0 && throwableObject.width != 0 && throwableObject.y > 90)) {
-                this.endBoss.hit()
-                playOrStopSound(this.bottle_break_sound);
-                throwableObject.isBroken = true
-                throwableObject.splash()
-                setTimeout(() => {
-                    throwableObject.height = 0
-                }, 500)
+            if (this.checkBottleHitsEndboss(throwableObject)) {
+                this.bottleHitsEndboss(throwableObject);
+            } else if (this.checkBottleHitsFloor(throwableObject)) {
+                this.bottleHitsFloor(throwableObject);
             }
         })
+    }
+
+
+    checkBottleHitsEndboss(throwableObject) {
+        return this.endBoss.isColliding(throwableObject) &&
+            !throwableObject.isBroken &&
+            (throwableObject.heigth != 0 && throwableObject.width != 0 && throwableObject.y > 90)
+    }
+
+
+    checkBottleHitsFloor(throwableObject) {
+        return !throwableObject.isBroken &&
+            throwableObject.y > 340 &&
+            throwableObject.speedY < 0
+    }
+
+
+    bottleHitsEndboss(throwableObject) {
+        this.endBoss.hit()
+        playOrStopSound(this.bottleBreakSound);
+        throwableObject.isBroken = true
+        throwableObject.splash()
+        setTimeout(() => {
+            throwableObject.height = 0
+        }, 500)
+    }
+
+
+    bottleHitsFloor(throwableObject) {
+        playOrStopSound(this.bottleBreakSound);
+        throwableObject.isBroken = true
+        throwableObject.splash()
+        setTimeout(() => {
+            throwableObject.height = 0
+        }, 500)
     }
 
 
     checkCollisionWithEndboss() {
         if (this.endBoss.isColliding(this.character)) {
             this.character.energy = 0
-            console.log("endboss colliding")
         }
     }
 
 
     checkGameEnd() {
         if (this.endBoss.energy == 0) {
-            setTimeout(() => {
-                this.gameEnd.wonGame()
-                this.game_sound.pause()
-                this.endboss_dead_sound.pause()
-                playOrStopSound(this.win_sound);
-            }, 1000)
+            this.gameWon();
+            this.gameSound.pause()
         }
-
         if (this.character.energy <= 0) {
-            setTimeout(() => {
-                this.gameEnd.lostGame()
-                this.game_sound.pause()
-                playOrStopSound(this.lost_sound);
-            }, 1000)
+            this.gameLost();
+            this.gameSound.pause()
         }
     }
 
 
-    checkThrowObjects() {
-        if (this.proofCanThrow()) {
-            if (this.bottleAmount != 0) {
-                let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100)
-                this.throwableObjects.push(bottle)
-                this.lastThrow = new Date().getTime();
-                this.bottleAmount--
-                this.bottleBar.setPercentage(this.bottleAmount * 20)
-            }
-        }
+    gameWon() {
+        setTimeout(() => {
+            this.gameEnd.wonGame()
+            this.endbossDeadSound.pause()
+            playOrStopSound(this.winSound);
+        }, 1000)
     }
 
-    proofCanThrow() {
-        return this.keyboard.D && !this.prooflastThrow(1001);
-      }
-    
-      prooflastThrow(ms) {
-        let timepassed = new Date().getTime() - this.lastThrow;
-        return timepassed < ms;
-      }
+
+    gameLost() {
+        setTimeout(() => {
+            this.gameEnd.lostGame()
+            playOrStopSound(this.lostSound);
+        }, 1000)
+    }
 
 
     removeCoin(coin) {
@@ -202,30 +294,23 @@ class World {
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-
-        this.ctx.translate(this.camera_x, 0); // verschiebt den Bildauschnitt um die variable camera_x auf der x-achse
+        this.ctx.translate(this.camera_x, 0);
         this.addObjectsToMap(this.level.backgroundObjects);
-
-        this.ctx.translate(-this.camera_x, 0); // Back
+        this.addObjectsToMap(this.level.cactus);
+        this.ctx.translate(-this.camera_x, 0);
         // -----Space for fixed objects ------
         this.addToMap(this.statusBar);
         this.addToMap(this.coinBar);
         this.addToMap(this.bottleBar);
-        this.ctx.translate(this.camera_x, 0); // Forward
-
-
+        this.ctx.translate(this.camera_x, 0);
         this.addObjectsToMap(this.coins)
         this.addObjectsToMap(this.bottles)
-
         this.addToMap(this.character)
         this.addObjectsToMap(this.level.clouds);
-        this.addObjectsToMap(this.level.enemies);// Reihenfolge der Funktionen ist wichtig
+        this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.throwableObjects);
+        this.ctx.translate(-this.camera_x, 0);
 
-        this.ctx.translate(-this.camera_x, 0); // verschieben wird wieder aufgehoben. bzw alles gezeichnete wird verschoben
-
-
-        // Draw() wird immer wieder aufgerufen
         let self = this;
         requestAnimationFrame(function () {
             self.draw();
@@ -241,11 +326,11 @@ class World {
 
 
     addToMap(mo) {
-        if (mo.otherDirection) { // falls spiegelverkehrt
+        if (mo.otherDirection) {
             this.flipImage(mo)
         }
         mo.draw(this.ctx);
-      // mo.drawFrame(this.ctx);
+        // mo.drawFrame(this.ctx);
         if (mo.otherDirection) {
             this.flipImageBack(mo)
         }
@@ -253,15 +338,15 @@ class World {
 
 
     flipImage(mo) {
-        this.ctx.save(); // aktuelle einstellungen werden gespeichert
-        this.ctx.translate(mo.width, 0); // Methode wie wir die Bilder einfügen wird verändert //verschieben damit das Bild wieder an der gleichen Stelle auftaucht
-        this.ctx.scale(-1, 1);  // spiegeln
+        this.ctx.save();
+        this.ctx.translate(mo.width, 0);
+        this.ctx.scale(-1, 1);
         mo.x = mo.x * -1;
     }
 
 
     flipImageBack(mo) {
         mo.x = mo.x * -1;
-        this.ctx.restore(); // Spiegelung Rückgängig machen
+        this.ctx.restore();
     }
 }
