@@ -31,6 +31,9 @@ class ThrowableObject extends MovableObject {
     }
 
 
+    /**
+     * defines what happens when the character trhows a bottle
+     */
     throw() {
         this.speedY = 25;
         this.applyGravity()
@@ -38,29 +41,28 @@ class ThrowableObject extends MovableObject {
     }
 
 
-
-
+    /**
+     * lets the bottle rotate while above ground 
+     */
     rotation() {
         setStoppableInterval(() => {
             if (this.isAboveGround() && !this.isBroken) {
-
                 if (this.otherDirection) {
-
                     this.playAnimation(this.IMAGES_BOTTLE_ROTATION)
                     this.x -= 10
                 }
                 else {
-
                     this.playAnimation(this.IMAGES_BOTTLE_ROTATION)
                     this.x += 10
                 }
-
-
             }
         }, 25)
     }
 
 
+    /**
+     * lets the bottle splash when colliding
+     */
     splash() {
         this.breakbottle = setStoppableInterval(() => {
             this.playAnimation(this.IMAGES_BOTTLE_SPLASH)
@@ -68,7 +70,10 @@ class ThrowableObject extends MovableObject {
         }, 25)
     }
 
-
+    
+    /**
+     * stops the splashing animation
+     */
     stopSplash() {
         setTimeout(() => {
             clearInterval(this.breakbottle)

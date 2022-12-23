@@ -46,6 +46,9 @@ class World {
     }
 
 
+    /**
+     * sets the variables for the world
+     */
     setWorld() {
         this.character.world = this;
         let endboss = this.level.enemies[this.level.enemies.length - 1];
@@ -53,6 +56,9 @@ class World {
     }
 
 
+    /**
+     * checks for collisions the condition for throwing objects, the end of game and the game sound
+     */
     run() {
         setStoppableInterval(() => {
             this.checkCollisions();
@@ -63,14 +69,20 @@ class World {
     }
 
 
+    /**
+     * checks condition for the game sound and plays the game sound
+     */
     checkGameSound() {
-        if (this.endBoss.energy == 0 || this.character.energy <= 0 )   {
+        if (this.endBoss.energy == 0 || this.character.energy <= 0) {
             this.gameSound.pause();
         } else
-        playSound ? this.gameSound.play() : this.gameSound.pause()
+            playSound ? this.gameSound.play() : this.gameSound.pause()
     }
 
 
+    /**
+     * checks the condition for throwing a bottle
+     */
     checkThrowObjects() {
         if (this.proofCanThrow()) {
             if (this.otherDirection) {
@@ -86,30 +98,46 @@ class World {
     }
 
 
+    /**
+     * 
+     * @returns requirements for throwing a bottle
+     */
     proofCanThrow() {
         return this.keyboard.D && !this.prooflastThrow(1001) && this.bottleAmount != 0;
     }
 
 
+    /**
+     * defines the details for throwing the bottle to the left
+     */
     canThrowBottleLeft() {
         let bottle = new ThrowableObject(this.character.x - 120, this.character.y + 120, this.character.otherDirection);
         this.throwableObjects.push(bottle)
     }
 
 
+    /**
+     * defines the details for throwing the bottle to the right
+     */
     canThrowBottleRight() {
         let bottle = new ThrowableObject(this.character.x + 50, this.character.y + 120, this.character.otherDirection);
         this.throwableObjects.push(bottle)
     }
 
 
+    /**
+     * sets a delay for throwing a bottle 
+     * @param {*} ms - milliseconds after bottle was thrown
+     */
     prooflastThrow(ms) {
         let timepassed = new Date().getTime() - this.lastThrow;
         return timepassed < ms;
     }
 
 
-    // Collision Character with enemies
+    /**
+     * checks collisions Character with enemies
+     */
     checkCollisions() {
         this.checkCollision();
         this.checkCollectCoins();
@@ -119,6 +147,9 @@ class World {
     }
 
 
+    /**
+     * checks the collisions of the character with enemies
+     */
     checkCollision() {
         this.level.enemies.forEach((enemy) => {
             if (this.contactWithEnemy(enemy)) {
@@ -134,21 +165,40 @@ class World {
     }
 
 
+    /**
+     * 
+     * @param {*} enemy - the enemy
+     * @returns requirements for contact with enemy
+     */
     contactWithEnemy(enemy) {
         return this.character.isColliding(enemy) && !this.character.isAboveGround() && !enemy.dead
     }
 
 
+    /**
+     * 
+     * @param {*} enemy - the enemy
+     * @returns requirements for contact with chicken
+     */
     contactWithChicken(enemy) {
         return this.character.isColliding(enemy) && this.character.isAboveGround() && this.character.speedY >= -30 && this.character.speedY < 0 && (enemy instanceof Chicken)
     }
 
 
+    /**
+     * 
+     * @param {*} enemy - the enemy
+     * @returns requirements for contact with small chicken
+     */
     contactWithSmallChicken(enemy) {
         return this.character.isColliding(enemy) && this.character.isAboveGround() && this.character.speedY >= -30 && this.character.speedY < 0 && (enemy instanceof SmallChicken)
     }
 
 
+    /**
+     * defines what happens when the character ist hit
+     * @param {*} damage - the damage of the character
+     */
     characterDamage(damage) {
         this.character.hit(damage);
         this.statusBar.setPercentage(this.character.energy);
@@ -156,6 +206,10 @@ class World {
     }
 
 
+    /**
+     * defines what happens when chicken is dead
+     * @param {*} enemy 
+     */
     chickenDead(enemy) {
         if (enemy instanceof Chicken && !enemy.dead) {
             this.character.speedY = 15;
@@ -167,6 +221,10 @@ class World {
     }
 
 
+    /**
+     * defines what happens when small chicken is dead
+     * @param {*} enemy 
+     */
     smallChickenDead(enemy) {
         if (enemy instanceof SmallChicken && !enemy.dead) {
             this.character.speedY = 15;
@@ -178,6 +236,9 @@ class World {
     }
 
 
+    /**
+     * defines what happens when character collects coins
+     */
     checkCollectCoins() {
         this.coins.forEach(coin => {
             if (this.character.isColliding(coin) && (coin.heigth != 0 && coin.width != 0)) {
@@ -191,6 +252,9 @@ class World {
     }
 
 
+    /**
+     * defines what happens when character collects bottle
+     */
     checkCollectBottles() {
         this.bottles.forEach(bottle => {
             if (this.character.isColliding(bottle) && (bottle.heigth != 0 && bottle.width != 0)) {
@@ -204,6 +268,9 @@ class World {
     };
 
 
+    /**
+     * checks the conditions for collision with bottle 
+     */
     checkCollisionBottle() {
         this.throwableObjects.forEach(throwableObject => {
             if (this.checkBottleHitsEndboss(throwableObject)) {
@@ -215,6 +282,11 @@ class World {
     }
 
 
+    /**
+     * 
+     * @param {*} throwableObject - the bottle
+     * @returns the requirements for bottle hitting the endboss
+     */
     checkBottleHitsEndboss(throwableObject) {
         return this.endBoss.isColliding(throwableObject) &&
             !throwableObject.isBroken &&
@@ -222,6 +294,11 @@ class World {
     }
 
 
+    /**
+     * 
+     * @param {*} throwableObject - the bottle
+     * @returns the requirements of bottle hitting the floor
+     */
     checkBottleHitsFloor(throwableObject) {
         return !throwableObject.isBroken &&
             throwableObject.y > 340 &&
@@ -229,6 +306,10 @@ class World {
     }
 
 
+    /**
+     * defines what happens when the bottle hits the endboss
+     * @param {*} throwableObject - the bottle
+     */
     bottleHitsEndboss(throwableObject) {
         this.endBoss.hit()
         playOrStopSound(this.bottleBreakSound);
@@ -240,6 +321,10 @@ class World {
     }
 
 
+    /**
+     * defines what happens the botle hits the floor
+     * @param {*} throwableObject - the bottle
+     */
     bottleHitsFloor(throwableObject) {
         playOrStopSound(this.bottleBreakSound);
         throwableObject.isBroken = true
@@ -250,6 +335,9 @@ class World {
     }
 
 
+    /**
+     * defines what happens when character hits endboss
+     */
     checkCollisionWithEndboss() {
         if (this.endBoss.isColliding(this.character)) {
             this.character.energy = 0
@@ -257,6 +345,9 @@ class World {
     }
 
 
+    /**
+     * checks conditions for game end
+     */
     checkGameEnd() {
         if (this.endBoss.energy == 0) {
             this.gameWon();
@@ -269,6 +360,9 @@ class World {
     }
 
 
+    /**
+     * defines what happens when the game is won and plays the win sound
+     */
     gameWon() {
         setTimeout(() => {
             this.gameEnd.wonGame()
@@ -278,6 +372,9 @@ class World {
     }
 
 
+    /**
+     * defines what happens when the game is lost and plays the lost sound
+     */
     gameLost() {
         setTimeout(() => {
             this.gameEnd.lostGame()
@@ -286,12 +383,19 @@ class World {
     }
 
 
+    /**
+     * removes the coin from the game
+     * @param {*} coin 
+     */
     removeCoin(coin) {
         let index = this.level.coins.indexOf(coin);
         this.level.coins.splice(index, 1);
     }
 
 
+    /**
+     * draws the objects in the canvas
+     */
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
         this.ctx.translate(this.camera_x, 0);
@@ -318,6 +422,10 @@ class World {
     }
 
 
+    /**
+     * adds the objects to the map
+     * @param {*} objects 
+     */
     addObjectsToMap(objects) {
         objects.forEach(o => {
             this.addToMap(o)
@@ -325,6 +433,10 @@ class World {
     }
 
 
+    /**
+     * adds movable object to the map
+     * @param {*} mo 
+     */
     addToMap(mo) {
         if (mo.otherDirection) {
             this.flipImage(mo)
@@ -337,6 +449,10 @@ class World {
     }
 
 
+    /**
+     * flips the object when moving in different direction
+     * @param {*} mo - mpvable object
+     */
     flipImage(mo) {
         this.ctx.save();
         this.ctx.translate(mo.width, 0);
@@ -344,7 +460,11 @@ class World {
         mo.x = mo.x * -1;
     }
 
-
+    
+    /**
+     * flips the image back
+     * @param {*} mo - movable object
+     */
     flipImageBack(mo) {
         mo.x = mo.x * -1;
         this.ctx.restore();

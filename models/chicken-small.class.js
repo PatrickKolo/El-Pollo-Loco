@@ -1,4 +1,4 @@
-class SmallChicken extends MovableObject{
+class SmallChicken extends MovableObject {
     height = 50;
     width = 55;
     y = 375;
@@ -25,16 +25,22 @@ class SmallChicken extends MovableObject{
     }
 
 
+    /**
+     * animates the chicken
+     */
     animate() {
-        this.move =  setInterval( () => {
-              this.x -= this.speed
-          }, 1000 / 60)
-        this.animationWalking  =  setInterval( () => {   
-              this.playAnimation(this.IMAGES_WALKING)
-          }, 100)   
-      }
+        this.move = setInterval(() => {
+            this.x -= this.speed
+        }, 1000 / 60)
+        this.animationWalking = setInterval(() => {
+            this.playAnimation(this.IMAGES_WALKING)
+        }, 100)
+    }
 
-
+    
+    /**
+     * stops the animation of the chicken
+     */
     stopAnimation() {
         clearInterval(this.move)
         clearInterval(this.animationWalking)

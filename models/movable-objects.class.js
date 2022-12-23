@@ -9,6 +9,10 @@ class MovableObject extends DrawableObject {
     lastHit = 0;
     damage = 0.5;
 
+
+    /**
+     * defines the gravity for the game
+     */
     applyGravity() {
         setInterval(() => {
             if (this.isAboveGround() || this.speedY > 0) {
@@ -19,13 +23,20 @@ class MovableObject extends DrawableObject {
     }
 
 
+    /**
+     * 
+     * @returns the area above the ground
+     */
     isAboveGround() {
         return this.y < this.groundPosition;
     }
 
-    
 
-    // character.iscolliding (chicken)
+    /**
+     * defines when to objects objects are colliding with the character
+     * @param {*} mo - movable object that collides with the character
+     * @returns 
+     */
     isColliding(mo) {
         return this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
             this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
@@ -34,6 +45,9 @@ class MovableObject extends DrawableObject {
     }
 
 
+    /**
+     * defines what happens when the character is hit. Substracts damage from energy
+     */
     hit() {
         this.energy -= this.damage;
         if (this.energy < 0) {
@@ -44,6 +58,9 @@ class MovableObject extends DrawableObject {
     }
 
 
+    /**
+     * sets the delay after the character is hit 
+     */
     isHurt() {
         let timepassed = new Date().getTime() - this.lastHit; // Difference in ms
         timepassed = timepassed / 1000;
@@ -51,30 +68,47 @@ class MovableObject extends DrawableObject {
     }
 
 
+    /**
+     * 
+     * @returns condition of death of the character
+     */
     isDead() {
         return this.energy == 0;
     }
 
 
+    /**
+     * plays the animation for the movable objects 
+     * @param {*} images - the images for the animation
+     */
     playAnimation(images) {
-        let i = this.currentImage % images.length; // % = Modulu = Mathematische Rest //  let i = 7 % 6; => 1, Rest 1 
+        let i = this.currentImage % images.length;
         // i = 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2......
-        let path = images[i]; // current Image ist beim ersten Durchlauf 0 also das 1. Bild des Arrays IMAGES_WALKING
+        let path = images[i];
         this.img = this.imageCache[path];
-        this.currentImage++; // wird mit jedem Durchlauf um 1 erhöht
+        this.currentImage++;
     }
 
 
+    /**
+     * enables movable object moving right
+     */
     moveRight() {
         this.x += this.speed;
     }
 
 
+    /**
+     * enables movable object moving left
+     */
     moveLeft() {
         this.x -= this.speed;
     }
 
-
+    
+    /**
+     * enables movable object jumping
+     */
     jump() {
         this.speedY = 20;
     }

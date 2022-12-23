@@ -9,18 +9,30 @@ class DrawableObject {
     offset = { right: 0, left: 0, top: 0, bottom: 0 };
 
 
-    //loadImage('img/Test.png')
+
+    /**
+     * loads the images for the animation
+     * @param {*} path - The Path of the targeted image
+     */
     loadImage(path) {
-        this.img = new Image(); // das gleiche wie this.img = document.getElementById('image') <img id="image".....
+        this.img = new Image();
         this.img.src = path;
     }
 
-
+    
+    /**
+     * defines the position of the object/ image
+     * @param {*} ctx - 
+     */
     draw(ctx) {
         ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
     }
 
 
+    /**
+     * defines the frame for collision checkingg
+     * @param {*} ctx 
+     */
     drawFrame(ctx) {
         if (this.canDrawFrame()) {
             ctx.beginPath();
@@ -31,6 +43,11 @@ class DrawableObject {
         }
     }
 
+
+    /**
+     * 
+     * @returns all objects for the collision frames
+     */
     canDrawFrame() {
         return this instanceof Character ||
             this instanceof Chicken ||
@@ -39,15 +56,23 @@ class DrawableObject {
     }
 
 
-    loadImages(arr) { // Array in die Funktion übergeben mit 6 verschiedenen Bildern allerdings als strings / Pfade
-        arr.forEach((path) => { // 6x durch die schleife durch: 6 pfade = for each
-            let img = new Image(); // Variable angelegt mit einem neuen Bild
-            img.src = path; // Bild/Path wird in das Image Objekt geladen
-            this.imageCache[path] = img; // ImageCache wird geupdatet und das erste Bild eingefügt
+    /**
+     * loads the Images in a loop from the Array for the animation
+     * @param {*} arr - Array with the images
+     */
+    loadImages(arr) {
+        arr.forEach((path) => {
+            let img = new Image();
+            img.src = path;
+            this.imageCache[path] = img;
         });
     }
 
 
+    /**
+     * sets the percentage for the 3 bars
+     * @param {*} percentage - the percentage
+     */
     setPercentage(percentage) {
         this.percentage = percentage
         let path = this.IMAGES[this.resolveImageIndex()]
@@ -55,6 +80,9 @@ class DrawableObject {
     }
 
 
+    /**
+     * translates the percentage to the value
+     */
     resolveImageIndex() {
         if (this.percentage == 100) {
             return 5

@@ -2,7 +2,7 @@ class Cloud extends MovableObject {
     y = 20;
     width = 500;
     height = 250;
-   
+
 
     constructor() {
         super().loadImage('img/5_background/layers/4_clouds/1.png', 'img/5_background/layers/4_clouds/2.png');
@@ -10,8 +10,11 @@ class Cloud extends MovableObject {
         this.animate();
     }
 
-
-    animate() {  // reduziert die pixel auf der X Achse pro frame um 0,15 => 60 frames pro sekunde
+    
+    /**
+     * enables clouds moving left
+     */
+    animate() { 
         this.moveLeft();
     }
 }

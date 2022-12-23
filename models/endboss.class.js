@@ -46,6 +46,10 @@ class Endboss extends MovableObject {
         this.animate()
     }
 
+    
+    /**
+     * animates the endboss
+     */
     animate() {
         setStoppableInterval(() => {
             if (this.isDead()) {
@@ -61,10 +65,13 @@ class Endboss extends MovableObject {
                 this.playAnimation(this.IMAGES_NORMAL)
             }
         }, 200)
-       this.animateEndbossMoving();
+        this.animateEndbossMoving();
     }
 
 
+    /**
+     * plays the dead animation of the endboss
+     */
     animateEndbossDead() {
         this.playAnimation(this.IMAGES_DEAD)
         clearInterval(this.moveX)
@@ -72,12 +79,20 @@ class Endboss extends MovableObject {
         this.endboss_walking.pause()
     }
 
+
+    /**
+     * plays the walking animation of the endboss
+     */
     animateEndbossWalking() {
         this.playAnimation(this.IMAGES_WALKING)
         playOrStopSound(this.endboss_walking);
     }
 
-    animateEndbossMoving(){
+
+    /**
+     * enables the boss to move when first hit
+     */
+    animateEndbossMoving() {
         setStoppableInterval(() => {
             if (!this.isDead() && this.energy <= 20 && this.energy >= 0) {
                 this.x -= 1.2

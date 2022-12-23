@@ -93,9 +93,10 @@ class Character extends MovableObject {
         this.jump();
     }
 
-/**
- * animates the Character
- */
+
+    /**
+     * animates the Character
+     */
     animate() {
         setStoppableInterval(() => {
             this.moveCharacter();
@@ -105,6 +106,7 @@ class Character extends MovableObject {
             this.animateCharacter();
         }, 100);
     }
+
 
     /**
      * enables the character to move left to right and jumping as well as the camera follwing the character
@@ -116,16 +118,18 @@ class Character extends MovableObject {
         this.cameraFollowsCharacter();
     }
 
-/**
- * enables the camera to follow the character
- */
+
+    /**
+     * enables the camera to follow the character
+     */
     cameraFollowsCharacter() {
         this.world.camera_x = -this.x + 100;
     }
 
-/**
- * lets the character jump and plays the jumping sound
- */
+
+    /**
+     * lets the character jump and plays the jumping sound
+     */
     moveUp() {
         if (this.canJump()) {
             this.jump()
@@ -133,9 +137,10 @@ class Character extends MovableObject {
         }
     }
 
-/**
- * lets the character move left or right
- */
+
+    /**
+     * lets the character move left or right
+     */
     moveLeftOrRight() {
         if (this.canMoveRight()) {
             this.walkRight();
@@ -146,9 +151,10 @@ class Character extends MovableObject {
         }
     }
 
-/**
- * lets the character move right, checks the direction and plays the walking sound
- */
+
+    /**
+     * lets the character move right, checks the direction and plays the walking sound
+     */
     walkRight() {
         this.moveRight();
         this.otherDirection = false;
@@ -157,9 +163,10 @@ class Character extends MovableObject {
         }
     }
 
-/**
- * lets the character move left, checks the direction and plays the walking sound
- */
+
+    /**
+     * lets the character move left, checks the direction and plays the walking sound
+     */
     walkLeft() {
         this.moveLeft();
         this.otherDirection = true;
@@ -168,9 +175,10 @@ class Character extends MovableObject {
         }
     }
 
-/**
- * animates the charcter when dead, hurt, jumping or sleeping
- */
+
+    /**
+     * animates the charcter when dead, hurt, jumping or sleeping
+     */
     animateCharacter() {
         if (this.isDead()) {
             this.playAnimation(this.IMAGES_DEAD);
@@ -186,9 +194,10 @@ class Character extends MovableObject {
         }
     }
 
-/**
- * plays the animation when character is not moving
- */
+
+    /**
+     * plays the animation when character is not moving
+     */
     animateWalkingOrSleeping() {
         if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
             this.playAnimation(this.IMAGES_WALKING);
@@ -198,34 +207,38 @@ class Character extends MovableObject {
         }
     }
 
-/**
- * 
- * @returns checks the requirements for moving right
- */
+
+    /**
+     * 
+     * @returns checks the requirements for moving right
+     */
     canMoveRight() {
         return this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x
     }
 
-/**
- * 
- * @returns checks the requirements for moving left
- */
+
+    /**
+     * 
+     * @returns checks the requirements for moving left
+     */
     canMoveLeft() {
         return this.world.keyboard.LEFT && this.x > 0
     }
 
-/**
- * 
- * @returns checks the requirements for moving right
- */
+
+    /**
+     * 
+     * @returns checks the requirements for moving right
+     */
     canJump() {
         return this.world.keyboard.UP && !this.isAboveGround()
     }
 
-/**
- * 
- * @returns checks the requirements for moving right
- */
+    
+    /**
+     * 
+     * @returns checks the requirements for moving right
+     */
     noJump() {
         return !this.world.keyboard.SPACE && !this.isAboveGround()
     }

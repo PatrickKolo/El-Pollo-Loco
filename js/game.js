@@ -18,6 +18,7 @@ function startGame() {
     world = new World(canvas, keyboard)
 }
 
+
 /**
  * shows the loading screen for 2 seconds
  */
@@ -26,6 +27,7 @@ function showLoadScreen() {
         document.getElementById("load-screen").classList.add("d-none");
     }, 2000);
 }
+
 
 /**
  * checks the orientation of the display
@@ -62,9 +64,9 @@ function openFullscreen() {
  * function for muting the sounds in the game
  */
 function muteSounds() {
-     playSound ? soundOff() : soundOn();
-
+    playSound ? soundOff() : soundOn();
 }
+
 
 /**
  * turns sound off and shows the mute icon
@@ -74,6 +76,7 @@ function soundOff() {
     playSound = false;
 }
 
+
 /**
  * turns sound on and shows the sound on icon
  */
@@ -81,6 +84,7 @@ function soundOn() {
     document.getElementById('sound').src = "img/play_info/volume.ico";
     playSound = true;
 }
+
 
 /**
  * function for muting and unmuting the sounds in the game
@@ -151,6 +155,7 @@ function listenForTouches() {
     touchJump();
 }
 
+
 /**
  * reads the touches on the control buttons for playing on mobile devices
  */
@@ -164,6 +169,7 @@ function touchMoveLeft() {
         keyboard.LEFT = false
     })
 }
+
 
 /**
  * reads the touches on the control buttons for playing on mobile devices
@@ -179,6 +185,7 @@ function touchMoveRight() {
     })
 }
 
+
 /**
  * reads the touches on the control buttons for playing on mobile devices
  */
@@ -192,6 +199,7 @@ function touchThrow() {
         keyboard.D = false
     })
 }
+
 
 /**
  * reads the touches on the control buttons for playing on mobile devices

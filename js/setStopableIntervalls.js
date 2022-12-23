@@ -11,6 +11,7 @@ function setStoppableInterval(fn, time) {
    intervalIDS.push(id)
 }
 
+
 /**
  * stops the interval
  */
